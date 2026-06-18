@@ -30,7 +30,7 @@
                     @foreach (var post in Model.Posts)
                     {
                         <tr>
-                            <td><a href="/posts/@post.Slug">@post.Title</a></td>
+                            <td><a asp-page="/Posts/Detail" asp-route-slug="@post.Slug">@post.Title</a></td>
                             <td>@post.AuthorName</td>
                             <td>
                                 @if (post.PublishedAt.HasValue)
@@ -45,7 +45,7 @@
                             <td><small>@(post.PublishedAt?.ToString("MMM dd, yyyy") ?? "-")</small></td>
                             <td>@post.ViewCount</td>
                             <td>
-                                <a href="/posts/@post.Slug/edit" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <a asp-page="/Posts/Edit" asp-route-slug="@post.Slug" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
                             </td>
                         </tr>
                     }

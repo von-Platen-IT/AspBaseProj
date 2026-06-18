@@ -1,4 +1,4 @@
-@page "{slug?}"
+@page "/posts/edit/{slug?}"
 @model AspBaseProj.Presentation.Pages.Posts.EditModel
 @{
     ViewData["Title"] = Model.IsEdit ? "Edit Post" : "Create Post";
@@ -82,7 +82,7 @@
 
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Post</button>
-                <a href="@(Model.IsEdit ? "/posts/" + Model.Input.Slug : "/")" class="btn btn-secondary">Cancel</a>
+                <a href="@(Model.IsEdit ? Url.Page("/Posts/Detail", new { slug = Model.Input.Slug }) : "/")" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
