@@ -17,7 +17,8 @@ obj/
 **/artifacts/
 
 # --- .NET User Secrets & Configuration ---
-appsettings.json
+appsettings.Production.json
+appsettings.Staging.json
 appsettings.*.json
 **/appsettings.*.json
 secrets.json
@@ -26,6 +27,9 @@ secrets.json
 # Keep example files for setup instructions
 !appsettings.example.json
 !**/appsettings.example.json
+
+# Allow development appsettings to be committed (development machine)
+!**/appsettings.json
 
 # --- .NET Test Results ---
 TestResults/
