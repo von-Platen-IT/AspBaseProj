@@ -30,6 +30,7 @@ secrets.json
 
 # Allow development appsettings to be committed (development machine)
 !**/appsettings.json
+!**/appsettings.Development.json
 
 # --- .NET Test Results ---
 TestResults/
