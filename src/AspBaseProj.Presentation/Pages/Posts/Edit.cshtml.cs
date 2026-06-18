@@ -51,8 +51,15 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string? slug)
     {
+        // Log for debugging
+        Console.WriteLine($"Edit.OnGetAsync called with slug parameter: '{slug}'");
+        Console.WriteLine($"RouteData.Values['slug']: '{RouteData.Values["slug"]}'");
+        Console.WriteLine($"RouteData.Values['id']: '{RouteData.Values["id"]}'");
+
         // Try to get slug from route data if not provided as parameter
-        slug = slug ?? (string?)ViewData["slug"] ?? RouteData.Values["slug"] as string;
+        slug = slug ?? RouteData.Values["slug"] as string ?? RouteData.Values["id"] as string;
+
+        Console.WriteLine($"Final slug value: '{slug}'");
 
         if (string.IsNullOrEmpty(slug))
         {
