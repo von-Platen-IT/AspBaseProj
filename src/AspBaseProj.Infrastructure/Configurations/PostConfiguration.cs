@@ -48,5 +48,10 @@ public sealed class PostConfiguration : IEntityTypeConfiguration<Post>
             .WithOne(s => s.Post)
             .HasForeignKey(s => s.PostId)
             .OnDelete(DeleteBehavior.Cascade);
+        // Votes (one-to-many)
+        builder.HasMany(p => p.Votes)
+            .WithOne(v => v.Post)
+            .HasForeignKey(v => v.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -3,6 +3,7 @@ using AspBaseProj.Application.Features.Comments.Commands;
 using AspBaseProj.Application.Features.Comments.Queries;
 using AspBaseProj.Application.Features.Posts.Commands;
 using AspBaseProj.Application.Features.Posts.Queries;
+using AspBaseProj.Application.Features.Votes.Commands;
 using AspBaseProj.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -101,4 +102,45 @@ public class DetailModel : PageModel
         }
     }
 
+    #region Voting
+
+    /// <summary>
+    /// AJAX endpoint: vote on a post.
+    /// </summary>
+    public async Task<JsonResult> OnPostVotePostAsync(Guid postId, bool isUpvote)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user is null)
+            return new JsonResult(new { error = "You must be logged in to vote." }) { StatusCode = 401 };
+
+        var result = await _mediator.Send(new VoteOnPostCommand
+        {
+            PostId = postId,
+            UserId = user.Id,
+            IsUpvote = isUpvote
+        });
+
+        return new JsonResult(result);
+    }
+
+    /// <summary>
+    /// AJAX endpoint: vote on a comment.
+    /// </summary>
+    public async Task<JsonResult> OnPostVoteCommentAsync(Guid commentId, bool isUpvote)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user is null)
+            return new JsonResult(new { error = "You must be logged in to vote." }) { StatusCode = 401 };
+
+        var result = await _mediator.Send(new VoteOnCommentCommand
+        {
+            CommentId = commentId,
+            UserId = user.Id,
+            IsUpvote = isUpvote
+        });
+
+        return new JsonResult(result);
+    }
+
+    #endregion
 }

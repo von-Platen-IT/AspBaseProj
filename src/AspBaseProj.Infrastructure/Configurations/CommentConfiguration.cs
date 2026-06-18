@@ -39,5 +39,10 @@ public sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .WithMany()
             .HasForeignKey(c => c.ApprovedById)
             .OnDelete(DeleteBehavior.SetNull);
+        // Votes (one-to-many)
+        builder.HasMany(c => c.Votes)
+            .WithOne(v => v.Comment)
+            .HasForeignKey(v => v.CommentId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

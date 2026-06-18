@@ -57,6 +57,8 @@ public sealed class GetCommentsByPostQueryHandler : IRequestHandler<GetCommentsB
                 IsRejected = c.IsRejected,
                 CreatedAt = c.CreatedAt,
                 ApprovedAt = c.ApprovedAt,
+                UpvoteCount = c.UpvoteCount,
+                DownvoteCount = c.DownvoteCount,
                 Replies = new List<CommentDto>()
             })
             .ToListAsync(cancellationToken);

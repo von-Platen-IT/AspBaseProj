@@ -45,7 +45,9 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
                 AuthorId = p.AuthorId,
                 AuthorName = p.Author.DisplayName ?? p.Author.UserName!,
                 PublishedAt = p.PublishedAt,
-                ViewCount = p.ViewCount
+                ViewCount = p.ViewCount,
+                UpvoteCount = p.UpvoteCount,
+                DownvoteCount = p.DownvoteCount
             })
             .ToListAsync(cancellationToken);
 
@@ -94,6 +96,8 @@ public sealed class GetPostBySlugQueryHandler : IRequestHandler<GetPostBySlugQue
             CreatedAt = post.CreatedAt,
             UpdatedAt = post.UpdatedAt,
             ViewCount = post.ViewCount,
+            UpvoteCount = post.UpvoteCount,
+            DownvoteCount = post.DownvoteCount,
             SocialLinks = post.SocialLinks.Select(s => new SocialLinkDto
             {
                 Id = s.Id,
@@ -139,7 +143,9 @@ public sealed class GetPostsByAuthorQueryHandler : IRequestHandler<GetPostsByAut
                 AuthorId = p.AuthorId,
                 AuthorName = p.Author.DisplayName ?? p.Author.UserName!,
                 PublishedAt = p.PublishedAt,
-                ViewCount = p.ViewCount
+                ViewCount = p.ViewCount,
+                UpvoteCount = p.UpvoteCount,
+                DownvoteCount = p.DownvoteCount
             })
             .ToListAsync(cancellationToken);
     }
@@ -175,7 +181,9 @@ public sealed class GetAllPostsQueryHandler : IRequestHandler<GetAllPostsQuery, 
                 AuthorId = p.AuthorId,
                 AuthorName = p.Author.DisplayName ?? p.Author.UserName!,
                 PublishedAt = p.PublishedAt,
-                ViewCount = p.ViewCount
+                ViewCount = p.ViewCount,
+                UpvoteCount = p.UpvoteCount,
+                DownvoteCount = p.DownvoteCount
             })
             .ToListAsync(cancellationToken);
     }

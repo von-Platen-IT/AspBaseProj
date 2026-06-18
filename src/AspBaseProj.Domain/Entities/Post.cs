@@ -61,6 +61,16 @@ public class Post
     /// </summary>
     public int ViewCount { get; set; }
 
+    /// <summary>
+    /// Total number of upvotes.
+    /// </summary>
+    public int UpvoteCount { get; set; }
+
+    /// <summary>
+    /// Total number of downvotes.
+    /// </summary>
+    public int DownvoteCount { get; set; }
+
     // --- Navigation properties ---
 
     /// <summary>
@@ -82,4 +92,9 @@ public class Post
     /// Social/video links embedded in this post.
     /// </summary>
     public ICollection<SocialLink> SocialLinks { get; set; } = [];
+
+    /// <summary>
+    /// Votes cast on this post.
+    /// </summary>
+    public ICollection<UserVote> Votes { get; set; } = [];
 }

@@ -66,4 +66,9 @@ public class AppUser : IdentityUser<Guid>
     /// Avatar media (one-to-one).
     /// </summary>
     public Media? AvatarImage { get; set; }
+
+    /// <summary>
+    /// Votes cast by this user.
+    /// </summary>
+    public ICollection<UserVote> Votes { get; set; } = [];
 }

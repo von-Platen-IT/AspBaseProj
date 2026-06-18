@@ -68,6 +68,16 @@ public class Comment
     /// </summary>
     public Guid? ApprovedById { get; set; }
 
+    /// <summary>
+    /// Total number of upvotes.
+    /// </summary>
+    public int UpvoteCount { get; set; }
+
+    /// <summary>
+    /// Total number of downvotes.
+    /// </summary>
+    public int DownvoteCount { get; set; }
+
     // --- Navigation properties ---
 
     /// <summary>
@@ -75,7 +85,7 @@ public class Comment
     /// </summary>
     public Post Post { get; set; } = null!;
 
-    /// <summary>
+    /// The admin/root who approved the comment (optional).
     /// Parent comment for nesting (null for top-level).
     /// </summary>
     public Comment? ParentComment { get; set; }
@@ -94,4 +104,9 @@ public class Comment
     /// The admin/root who approved the comment (optional).
     /// </summary>
     public AppUser? ApprovedBy { get; set; }
+
+    /// <summary>
+    /// Votes cast on this comment.
+    /// </summary>
+    public ICollection<UserVote> Votes { get; set; } = [];
 }

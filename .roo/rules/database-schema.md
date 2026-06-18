@@ -5,7 +5,7 @@
 > **Edit this file to reflect schema changes** — the AI agent will update code accordingly.
 
 **Technology:** .NET 10 Fullstack (ASP.NET Core, PostgreSQL, EF Core)
-**Last Updated:** 2026-06-17 13:01
+**Last Updated:** 2026-06-18 18:30
 
 ---
 
@@ -60,12 +60,15 @@ A blog post authored by a registered user. Contains HTML content, supports embed
 | `CreatedAt` | `DateTime` | No | Creation timestamp |
 | `UpdatedAt` | `DateTime?` | Yes | Last edit timestamp |
 | `ViewCount` | `int` | No | Number of times the post has been viewed |
+| `UpvoteCount` | `int` | No | Total number of upvotes |
+| `DownvoteCount` | `int` | No | Total number of downvotes |
 
 #### Relationships
 
 - **Many To One** `AppUser`: Each post belongs to one author
 - **One To Many** `Comment`: A post can have many comments
 - **One To Many** `Media`: A post can have multiple embedded images
+- **One To Many** `UserVote`: A post can have many votes
 
 ---
 
@@ -89,6 +92,8 @@ A comment on a blog post or a reply to another comment (nested discussions). Aut
 | `CreatedAt` | `DateTime` | No | Comment creation timestamp |
 | `ApprovedAt` | `DateTime?` | Yes | When the comment was approved by a moderator |
 | `ApprovedById` | `Guid?` | Yes | FK to AppUser (Admin/root) who approved the comment |
+| `UpvoteCount` | `int` | No | Total number of upvotes |
+| `DownvoteCount` | `int` | No | Total number of downvotes |
 
 #### Relationships
 
@@ -97,6 +102,7 @@ A comment on a blog post or a reply to another comment (nested discussions). Aut
 - **One To Many** `Comment`: A comment can have many child replies
 - **Many To One** `AppUser`: Optional: the authenticated user who wrote the comment
 - **Many To One** `AppUser`: Optional: the admin/root who approved the comment
+- **One To Many** `UserVote`: A comment can have many votes
 
 ---
 

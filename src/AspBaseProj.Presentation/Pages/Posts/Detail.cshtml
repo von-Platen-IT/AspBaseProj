@@ -62,6 +62,20 @@
             }
         </div>
     }
+    <!-- Post Voting -->
+    <div class="d-flex align-items-center gap-3 mt-3 mb-2">
+        <button type="button" class="btn btn-sm btn-outline-success vote-btn @(User.Identity?.IsAuthenticated == true ? "" : "disabled")"
+                onclick="voteOnPost('@Model.Post.Id', true)" id="postUpvoteBtn-@Model.Post.Id"
+                title="Upvote">
+            <i class="bi bi-hand-thumbs-up"></i> <span id="postUpvoteCount-@Model.Post.Id">@Model.Post.UpvoteCount</span>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger vote-btn @(User.Identity?.IsAuthenticated == true ? "" : "disabled")"
+                onclick="voteOnPost('@Model.Post.Id', false)" id="postDownvoteBtn-@Model.Post.Id"
+                title="Downvote">
+            <i class="bi bi-hand-thumbs-down"></i> <span id="postDownvoteCount-@Model.Post.Id">@Model.Post.DownvoteCount</span>
+        </button>
+        <small class="text-muted">Vote on this post (logged in users only)</small>
+    </div>
 </article>
 
 <hr class="my-4" />
@@ -197,6 +211,52 @@
             if (form) {
                 form.style.display = 'none';
             }
+        }
+
+        // Voting functions
+        function voteOnPost(postId, isUpvote) {
+            fetch('/Posts/Detail?handler=VotePost&postId=' + postId + '&isUpvote=' + isUpvote, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': getAntiXsrfToken()
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                document.getElementById('postUpvoteCount-' + postId).textContent = data.upvoteCount;
+                document.getElementById('postDownvoteCount-' + postId).textContent = data.downvoteCount;
+            })
+            .catch(error => console.error('Vote error:', error));
+        }
+
+        function voteOnComment(commentId, isUpvote) {
+            fetch('/Posts/Detail?handler=VoteComment&commentId=' + commentId + '&isUpvote=' + isUpvote, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': getAntiXsrfToken()
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                document.getElementById('commentUpvoteCount-' + commentId).textContent = data.upvoteCount;
+                document.getElementById('commentDownvoteCount-' + commentId).textContent = data.downvoteCount;
+            })
+            .catch(error => console.error('Vote error:', error));
+        }
+
+        // Get anti-CSRF token from the page
+        function getAntiXsrfToken() {
+            var tokens = document.getElementsByName('__RequestVerificationToken');
+            if (tokens.length > 0) return tokens[0].value;
+            return '';
         }
     </script>
 }

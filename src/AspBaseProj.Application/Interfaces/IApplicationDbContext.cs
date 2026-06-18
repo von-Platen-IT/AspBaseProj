@@ -14,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<Media> Media { get; }
     DbSet<SystemSetting> SystemSettings { get; }
     DbSet<SocialLink> SocialLinks { get; }
+    DbSet<UserVote> UserVotes { get; }
     DbSet<AppUser> Users { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

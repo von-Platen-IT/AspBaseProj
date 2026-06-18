@@ -17,6 +17,8 @@ public sealed record PostDto
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedAt { get; init; }
     public int ViewCount { get; init; }
+    public int UpvoteCount { get; init; }
+    public int DownvoteCount { get; init; }
     public List<SocialLinkDto> SocialLinks { get; init; } = [];
 }
 
@@ -33,6 +35,8 @@ public sealed record PostSummaryDto
     public string AuthorName { get; init; } = string.Empty;
     public DateTime? PublishedAt { get; init; }
     public int ViewCount { get; init; }
+    public int UpvoteCount { get; init; }
+    public int DownvoteCount { get; init; }
 }
 
 /// <summary>

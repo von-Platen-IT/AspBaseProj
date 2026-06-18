@@ -16,6 +16,8 @@ public sealed record CommentDto
     public bool IsRejected { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime? ApprovedAt { get; init; }
+    public int UpvoteCount { get; init; }
+    public int DownvoteCount { get; init; }
     public List<CommentDto> Replies { get; init; } = [];
 }
 
