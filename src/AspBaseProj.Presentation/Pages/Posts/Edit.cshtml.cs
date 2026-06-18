@@ -51,6 +51,9 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string? slug)
     {
+        // Try to get slug from route data if not provided as parameter
+        slug = slug ?? (string?)ViewData["slug"] ?? RouteData.Values["slug"] as string;
+
         if (string.IsNullOrEmpty(slug))
         {
             IsEdit = false;
@@ -66,6 +69,13 @@ public class EditModel : PageModel
         catch (KeyNotFoundException)
         {
             return NotFound();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception for debugging
+            Console.WriteLine($"Error loading post: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            throw; // Re-throw to let the global exception handler deal with it
         }
 
         // Check authorization: author can only edit own posts
