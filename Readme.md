@@ -87,7 +87,7 @@ Die Datenhaltung erfolgt über eine PostgreSQL-Datenbank, die in einem Docker-Co
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
 - [Docker](https://www.docker.com/) (for the PostgreSQL container)
-- A free TCP port `5432` on the host (used by the `--network host` container)
+- A free TCP port `5433` on the host (used for PostgreSQL)
 
 ### 1. Start PostgreSQL
 
@@ -97,13 +97,16 @@ reviewable. The named volume `postgres_abp_data` persists data across container
 restarts, and `--restart unless-stopped` ensures the container survives host
 reboots.
 
+**Note:** The container maps host port `5433` to container port `5432` to avoid
+conflicts if port `5432` is already in use on your host.
+
 ```bash
-sudo docker run \
+docker run \
   --name aspbaseporj_db \
   -e POSTGRES_USER=admin \
   -e POSTGRES_PASSWORD=gandalf123! \
   -e POSTGRES_DB=deine_datenbank \
-  --network host \
+  -p 5433:5432 \
   -v postgres_abp_data:/var/lib/postgresql/data \
   --restart unless-stopped \
   -d postgres:17
