@@ -78,12 +78,12 @@ public sealed class GetCommentsByPostQueryHandler : IRequestHandler<GetCommentsB
     private static List<CommentDto> BuildTree(List<CommentDto> allComments, Guid? parentId)
     {
         var children = allComments.Where(c => c.ParentCommentId == parentId).ToList();
-        foreach (var child in children)
+        for (int i = 0; i < children.Count; i++)
         {
+            var child = children[i];
             var replies = BuildTree(allComments, child.Id);
-            // Rebuild the comment with its replies
-            var index = children.IndexOf(child);
-            children[index] = child with { Replies = replies };
+            // Rebuild the comment with its replies (records are immutable)
+            children[i] = child with { Replies = replies };
         }
         return children;
     }
