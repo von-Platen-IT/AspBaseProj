@@ -37,8 +37,8 @@ public class DetailModel : PageModel
             return NotFound();
         }
 
-        // Increment view count (fire and forget style, but await for correctness)
-        _ = _mediator.Send(new IncrementViewCountCommand { PostId = Post.Id });
+        // Increment view count
+        await _mediator.Send(new IncrementViewCountCommand { PostId = Post.Id });
 
         Comments = await _mediator.Send(new GetCommentsByPostQuery { PostId = Post.Id });
 
