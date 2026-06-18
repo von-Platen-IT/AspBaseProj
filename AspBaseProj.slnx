@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AspBaseProj.Application/AspBaseProj.Application.csproj" />
+    <Project Path="src/AspBaseProj.Domain/AspBaseProj.Domain.csproj" />
+    <Project Path="src/AspBaseProj.Infrastructure/AspBaseProj.Infrastructure.csproj" />
+    <Project Path="src/AspBaseProj.Presentation/AspBaseProj.Presentation.csproj" />
+  </Folder>
+</Solution>

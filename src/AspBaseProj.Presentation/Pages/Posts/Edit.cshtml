@@ -1,0 +1,162 @@
+@page "{slug?}"
+@model AspBaseProj.Presentation.Pages.Posts.EditModel
+@{
+    ViewData["Title"] = Model.IsEdit ? "Edit Post" : "Create Post";
+}
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <h2 class="mb-4">
+            <i class="bi bi-pencil-square"></i> @(Model.IsEdit ? "Edit Post" : "Create New Post")
+        </h2>
+
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Title" class="form-label"></label>
+                <input asp-for="Input.Title" class="form-control" id="titleInput" />
+                <span asp-validation-for="Input.Title" class="text-danger"></span>
+                <small class="text-muted">Slug: <span id="slugPreview" class="fw-bold"></span></small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.ContentHtml" class="form-label"></label>
+                <div class="editor-toolbar">
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('bold')"><i class="bi bi-type-bold"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('italic')"><i class="bi bi-type-italic"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('underline')"><i class="bi bi-type-underline"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('formatBlock','h2')">H2</button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('formatBlock','h3')">H3</button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('insertUnorderedList')"><i class="bi bi-list-ul"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('insertOrderedList')"><i class="bi bi-list-ol"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="execCmd('formatBlock','blockquote')"><i class="bi bi-quote"></i></button>
+                    <button type="button" class="btn btn-sm btn-light" onclick="insertLink()"><i class="bi bi-link"></i></button>
+                </div>
+                <div class="editor-content" contenteditable="true" id="editor" style="display:none;"></div>
+                <textarea asp-for="Input.ContentHtml" class="form-control" rows="15" id="contentTextarea" style="display:none;"></textarea>
+                <div class="editor-content" contenteditable="true" id="editorVisible"></div>
+                <span asp-validation-for="Input.ContentHtml" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Upload Image</label>
+                <input type="file" name="ImageFile" class="form-control" accept="image/*" onchange="uploadImage(this)" />
+                <small class="text-muted">Images are stored in the database and embedded in the content.</small>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Excerpt" class="form-label"></label>
+                <textarea asp-for="Input.Excerpt" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Input.Excerpt" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.IsPublished" class="form-label"></label>
+                <div class="form-check form-switch">
+                    <input asp-for="Input.IsPublished" class="form-check-input" type="checkbox" role="switch" />
+                    <label class="form-check-label" asp-for="Input.IsPublished">Publish immediately</label>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="mb-3">
+                <label class="form-label">Social/Video Links</label>
+                <div id="socialLinks">
+                    @if (Model.Input.SocialLinks != null)
+                    {
+                        for (int i = 0; i < Model.Input.SocialLinks.Count; i++)
+                        {
+                            <div class="input-group mb-2 social-link-row">
+                                <input name="Input.SocialLinks[@i].Url" class="form-control" placeholder="URL" value="@Model.Input.SocialLinks[i].Url" />
+                                <input name="Input.SocialLinks[@i].Platform" class="form-control" placeholder="Platform (e.g. YouTube)" value="@Model.Input.SocialLinks[i].Platform" style="max-width: 150px;" />
+                                <input name="Input.SocialLinks[@i].Title" class="form-control" placeholder="Title" value="@Model.Input.SocialLinks[i].Title" style="max-width: 200px;" />
+                                <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSocialLink()"><i class="bi bi-plus"></i> Add Link</button>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Post</button>
+                <a href="@(Model.IsEdit ? "/posts/" + Model.Input.Slug : "/")" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize editor with existing content
+        document.addEventListener('DOMContentLoaded', function() {
+            var existing = document.getElementById('contentTextarea').value;
+            document.getElementById('editorVisible').innerHTML = existing;
+        });
+
+        function execCmd(cmd, value) {
+            document.execCommand(cmd, false, value || null);
+            syncContent();
+        }
+
+        function syncContent() {
+            document.getElementById('contentTextarea').value = document.getElementById('editorVisible').innerHTML;
+        }
+
+        document.getElementById('editorVisible').addEventListener('input', syncContent);
+
+        function insertLink() {
+            var url = prompt('Enter URL:');
+            if (url) {
+                document.execCommand('createLink', false, url);
+                syncContent();
+            }
+        }
+
+        function uploadImage(input) {
+            if (input.files && input.files[0]) {
+                var formData = new FormData();
+                formData.append('file', input.files[0]);
+                formData.append('postId', '@Model.PostId');
+
+                fetch('/api/media/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.mediaId) {
+                        var img = '<img src="/api/media/' + data.mediaId + '" alt="' + input.files[0].name + '" class="img-fluid" />';
+                        document.execCommand('insertHTML', false, img);
+                        syncContent();
+                    }
+                })
+                .catch(err => alert('Upload failed: ' + err));
+            }
+        }
+
+        function addSocialLink() {
+            var container = document.getElementById('socialLinks');
+            var index = container.children.length;
+            var div = document.createElement('div');
+            div.className = 'input-group mb-2 social-link-row';
+            div.innerHTML = '<input name="Input.SocialLinks[' + index + '].Url" class="form-control" placeholder="URL" />' +
+                '<input name="Input.SocialLinks[' + index + '].Platform" class="form-control" placeholder="Platform" style="max-width: 150px;" />' +
+                '<input name="Input.SocialLinks[' + index + '].Title" class="form-control" placeholder="Title" style="max-width: 200px;" />' +
+                '<button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>';
+            container.appendChild(div);
+        }
+
+        // Slug preview
+        document.getElementById('titleInput').addEventListener('input', function() {
+            var slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim('-');
+            document.getElementById('slugPreview').textContent = slug;
+        });
+    </script>
+}

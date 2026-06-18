@@ -1,0 +1,42 @@
+@page
+@model AspBaseProj.Presentation.Pages.Admin.SettingsModel
+@{
+    ViewData["Title"] = "System Settings";
+}
+
+<h2 class="mb-4"><i class="bi bi-gear"></i> System Settings</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="card">
+        <div class="card-body">
+            @for (int i = 0; i < Model.Settings.Count; i++)
+            {
+                <div class="mb-3">
+                    <label class="form-label fw-bold">@Model.Settings[i].Key</label>
+                    <input type="hidden" name="Settings[@i].Key" value="@Model.Settings[i].Key" />
+                    <input type="hidden" name="Settings[@i].Id" value="@Model.Settings[i].Id" />
+                    <input type="hidden" name="Settings[@i].Description" value="@Model.Settings[i].Description" />
+                    <input type="hidden" name="Settings[@i].UpdatedAt" value="@Model.Settings[i].UpdatedAt" />
+                    @if (Model.Settings[i].Key == "ModerationEnabled")
+                    {
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="Settings[@i].Value" value="true" class="form-check-input" id="setting_@i"
+                                   @(Model.Settings[i].Value == "true" ? "checked" : "") />
+                            <label class="form-check-label" for="setting_@i">Enable moderation for guest comments</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="text" name="Settings[@i].Value" value="@Model.Settings[i].Value" class="form-control" />
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Settings[i].Description))
+                    {
+                        <small class="text-muted">@Model.Settings[i].Description</small>
+                    }
+                </div>
+            }
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Settings</button>
+        </div>
+    </div>
+</form>

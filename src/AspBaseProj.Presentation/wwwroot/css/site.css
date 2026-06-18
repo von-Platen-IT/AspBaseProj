@@ -1,0 +1,188 @@
+/* AspBaseProj Blog - Site Styles */
+
+:root {
+    --primary-color: #0d6efd;
+    --dark-bg: #212529;
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--light-bg);
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* Post cards */
+.post-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.post-card .card-title a {
+    text-decoration: none;
+    color: var(--dark-bg);
+}
+
+.post-card .card-title a:hover {
+    color: var(--primary-color);
+}
+
+/* Post content typography */
+.post-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    max-width: 800px;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    margin: 1rem 0;
+}
+
+.post-content h1, .post-content h2, .post-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.post-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.post-content pre {
+    background-color: #f1f3f5;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+}
+
+/* Social link cards */
+.social-link-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.social-link-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    color: inherit;
+}
+
+.social-link-card .platform-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
+/* Comment threads */
+.comment-thread {
+    list-style: none;
+    padding-left: 0;
+}
+
+.comment-thread .comment-reply {
+    margin-left: 2rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border-color);
+}
+
+.comment-item {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: white;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+}
+
+.comment-item .comment-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.comment-item .comment-author {
+    font-weight: 600;
+    color: var(--dark-bg);
+}
+
+.comment-item.pending {
+    border-color: #ffc107;
+    background-color: #fff8e1;
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--primary-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Admin dashboard cards */
+.admin-card {
+    transition: transform 0.2s;
+}
+
+.admin-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Forms */
+.form-label {
+    font-weight: 500;
+}
+
+/* HTML editor toolbar */
+.editor-toolbar {
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.editor-toolbar button {
+    margin-right: 0.25rem;
+}
+
+.editor-content {
+    min-height: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 0.375rem 0.375rem;
+    padding: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .post-content {
+        font-size: 1rem;
+    }
+
+    .comment-thread .comment-reply {
+        margin-left: 1rem;
+    }
+
+    .navbar .search-form {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}

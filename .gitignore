@@ -1,0 +1,190 @@
+# =============================================
+# ASP.NET Core / .NET 10 GitIgnore
+# Optimized for AspBaseProj
+# =============================================
+
+# --- .NET Build Outputs ---
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.dll.config
+*.cache
+*.nupkg
+*.snupkg
+**/packages/
+**/artifacts/
+
+# --- .NET User Secrets & Configuration ---
+appsettings.json
+appsettings.*.json
+**/appsettings.*.json
+secrets.json
+*.secrets.json
+
+# Keep example files for setup instructions
+!appsettings.example.json
+!**/appsettings.example.json
+
+# --- .NET Test Results ---
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+*.xml
+
+# --- Visual Studio / IDE ---
+.vs/
+*.suo
+*.user
+*.sln.docstates
+*.ncrunchsolution
+*.ncrunchproject
+*.resharper
+_ReSharper*/
+*.DotSettings.user
+
+# --- VS Code ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- Rider / IntelliJ ---
+.idea/
+*.iml
+*.iws
+
+# --- Docker ---
+docker-compose.override.yml
+.dockerignore
+
+# --- Database ---
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/Migrations/**/*.sql
+
+# --- Logs ---
+*.log
+*.log.*
+logs/
+log/
+
+# --- Environment & Secrets ---
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# --- OS Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# --- Temporary Files ---
+*.tmp
+*.temp
+*.bak
+*.backup
+*~*
+*.swp
+*.swo
+*.swn
+
+# --- NuGet ---
+.nuget/
+packages.lock.json
+**/packages.lock.json
+
+# --- Publish Output ---
+**/publish/
+**/PublishOutput/
+
+# --- Azure / Cloud ---
+*.azurewebsites.net
+*.scm.azurewebsites.net
+
+# --- Blazor / WebAssembly ---
+**/wwwroot/_framework/
+**/wwwroot/blazor-boot.json
+
+# --- EF Core ---
+**/efpt.config.json
+**/*.efbundle
+
+# --- User-specific ---
+*.userprefs
+*.pidb
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+.build.csproj
+
+# --- F# / Script ---
+*.fsx.lock
+
+# --- Python (if used for tooling) ---
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Node (if used for tooling) ---
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# --- Coverage & Testing ---
+htmltest/
+.vsts/
+.coverage/
+coverlet/
+
+# --- GitHub Specific ---
+.github/
+!.github/workflows/
+
+# --- Documentation Build ---
+docfx/
+api/
+_temp/
+
+# --- SQL Server Compact ---
+*.sdf
+*.mdf
+*.ldf
+
+# --- macOS ---
+**/.Spotlight-V100
+**/.Trashes
+
+# --- Linux ---
+*~
+.core
+*.stackdump
+
+# --- Rider ---
+**/.idea/
+**/*.ipr
+**/*.iws
+
+# --- Custom for AspBaseProj ---
+# Exclude any local test data or uploads
+**/Uploads/
+**/Data/
+**/temp/
+
+# Exclude build configuration that might contain secrets
+Directory.Build.props.user

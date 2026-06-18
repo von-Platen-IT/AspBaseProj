@@ -1,0 +1,84 @@
+@page
+@model AspBaseProj.Presentation.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+        {
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Search results for "@Model.SearchTerm"</h4>
+                <a href="/" class="btn btn-sm btn-outline-secondary">Clear search</a>
+            </div>
+        }
+        else
+        {
+            <h2 class="mb-4">Latest Posts</h2>
+        }
+
+        @if (Model.Posts.Items.Count == 0)
+        {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No posts found.
+            </div>
+        }
+        else
+        {
+            @foreach (var post in Model.Posts.Items)
+            {
+                <div class="card post-card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="/posts/@post.Slug">@post.Title</a>
+                        </h5>
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-person"></i> @post.AuthorName
+                            @if (post.PublishedAt.HasValue)
+                            {
+                                <span class="mx-2">|</span>
+                                <i class="bi bi-calendar"></i> @post.PublishedAt.Value.ToString("MMM dd, yyyy")
+                            }
+                            <span class="mx-2">|</span>
+                            <i class="bi bi-eye"></i> @post.ViewCount views
+                        </div>
+                        @if (!string.IsNullOrEmpty(post.Excerpt))
+                        {
+                            <p class="card-text">@post.Excerpt</p>
+                        }
+                        <a href="/posts/@post.Slug" class="btn btn-primary btn-sm">Read more <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Posts.TotalPages > 1)
+            {
+                <nav aria-label="Post pagination">
+                    <ul class="pagination justify-content-center">
+                        @if (Model.Posts.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/?pageNumber=@(Model.Posts.PageNumber - 1)@(string.IsNullOrEmpty(Model.SearchTerm) ? "" : "&search=" + Model.SearchTerm)">&laquo; Previous</a>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.Posts.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.Posts.PageNumber ? "active" : "")">
+                                <a class="page-link" href="/?pageNumber=@i@(string.IsNullOrEmpty(Model.SearchTerm) ? "" : "&search=" + Model.SearchTerm)">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.Posts.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="/?pageNumber=@(Model.Posts.PageNumber + 1)@(string.IsNullOrEmpty(Model.SearchTerm) ? "" : "&search=" + Model.SearchTerm)">Next &raquo;</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        }
+    </div>
+</div>

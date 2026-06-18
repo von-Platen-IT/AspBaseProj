@@ -1,0 +1,31 @@
+@model List<AspBaseProj.Application.DTOs.CommentDto>
+
+@foreach (var comment in Model)
+{
+    <li class="comment-item @(comment.IsApproved ? "" : "pending")">
+        <div class="comment-meta">
+            <span class="comment-author">@(comment.UserName ?? comment.GuestName ?? "Anonymous")</span>
+            <span class="mx-1">|</span>
+            <span>@comment.CreatedAt.ToString("MMM dd, yyyy HH:mm")</span>
+            @if (!comment.IsApproved && !comment.IsRejected)
+            {
+                <span class="badge bg-warning text-dark ms-2">Pending</span>
+            }
+            @if (comment.IsRejected)
+            {
+                <span class="badge bg-danger ms-2">Rejected</span>
+            }
+        </div>
+        <p class="mt-2 mb-1">@comment.Content</p>
+        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0" onclick="replyTo('@comment.Id')">
+            <i class="bi bi-reply"></i> Reply
+        </button>
+
+        @if (comment.Replies.Count > 0)
+        {
+            <ul class="comment-thread comment-reply mt-2">
+                @await Html.PartialAsync("_CommentTree", comment.Replies)
+            </ul>
+        }
+    </li>
+}

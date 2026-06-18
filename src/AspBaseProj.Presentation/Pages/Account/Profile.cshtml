@@ -1,0 +1,110 @@
+@page
+@model AspBaseProj.Presentation.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h2 class="mb-4"><i class="bi bi-person-circle"></i> My Profile</h2>
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="bi bi-info-circle"></i> Profile Information</div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Username:</div>
+                    <div class="col-sm-9">@Model.Profile.UserName</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Email:</div>
+                    <div class="col-sm-9">@Model.Profile.Email</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Group:</div>
+                    <div class="col-sm-9">
+                        <span class="badge bg-primary">@Model.Profile.Group</span>
+                        @if (Model.Profile.IsRoot)
+                        {
+                            <span class="badge bg-danger">ROOT</span>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Display Name:</div>
+                    <div class="col-sm-9">@(Model.Profile.DisplayName ?? "Not set")</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Member Since:</div>
+                    <div class="col-sm-9">@Model.Profile.CreatedAt.ToString("MMM dd, yyyy")</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header"><i class="bi bi-pencil"></i> Edit Profile</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="UpdateProfile">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label asp-for="EditInput.DisplayName" class="form-label"></label>
+                        <input asp-for="EditInput.DisplayName" class="form-control" value="@Model.Profile.DisplayName" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="EditInput.Email" class="form-label"></label>
+                        <input asp-for="EditInput.Email" class="form-control" value="@Model.Profile.Email" />
+                        <span asp-validation-for="EditInput.Email" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><i class="bi bi-file-earmark-text"></i> My Posts</div>
+            <div class="card-body">
+                @if (Model.MyPosts.Count == 0)
+                {
+                    <p class="text-muted">You haven't created any posts yet.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Views</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in Model.MyPosts)
+                                {
+                                    <tr>
+                                        <td><a href="/posts/@post.Slug">@post.Title</a></td>
+                                        <td>
+                                            @if (post.PublishedAt.HasValue)
+                                            {
+                                                <span class="badge bg-success">Published</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Draft</span>
+                                            }
+                                        </td>
+                                        <td>@post.ViewCount</td>
+                                        <td>
+                                            <a href="/posts/@post.Slug/edit" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                <a href="/posts/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Create New Post</a>
+            </div>
+        </div>
+    </div>
+</div>

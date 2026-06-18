@@ -1,0 +1,77 @@
+@page
+@model AspBaseProj.Presentation.Pages.Admin.ModerationModel
+@{
+    ViewData["Title"] = "Moderation Queue";
+}
+
+<h2 class="mb-4"><i class="bi bi-shield-check"></i> Moderation Queue</h2>
+
+@if (Model.PendingComments.Count == 0)
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i> No pending comments. All caught up!
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="BulkAction" id="bulkForm">
+        @Html.AntiForgeryToken()
+        <div class="mb-3">
+            <button type="submit" name="action" value="approve" class="btn btn-success btn-sm" onclick="return confirm('Approve all selected comments?')">
+                <i class="bi bi-check-lg"></i> Bulk Approve
+            </button>
+            <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm" onclick="return confirm('Reject all selected comments?')">
+                <i class="bi bi-x-lg"></i> Bulk Reject
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th width="30"><input type="checkbox" id="selectAll" onclick="toggleAll(this)" /></th>
+                        <th>Guest Name</th>
+                        <th>Email</th>
+                        <th>Comment</th>
+                        <th>Post</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var comment in Model.PendingComments)
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="commentIds" value="@comment.Id" class="comment-checkbox" /></td>
+                            <td>@comment.GuestName</td>
+                            <td><small>@comment.GuestEmail</small></td>
+                            <td>@comment.Content</td>
+                            <td><small>@comment.PostTitle</small></td>
+                            <td><small>@comment.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small></td>
+                            <td>
+                                <form method="post" asp-page-handler="Approve" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i></button>
+                                </form>
+                                <form method="post" asp-page-handler="Reject" class="d-inline" onsubmit="return confirm('Reject this comment?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-x-lg"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        function toggleAll(source) {
+            document.querySelectorAll('.comment-checkbox').forEach(cb => cb.checked = source.checked);
+        }
+    </script>
+}

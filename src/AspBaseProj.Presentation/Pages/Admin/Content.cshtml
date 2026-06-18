@@ -1,0 +1,56 @@
+@page
+@model AspBaseProj.Presentation.Pages.Admin.ContentModel
+@{
+    ViewData["Title"] = "Content Management";
+}
+
+<h2 class="mb-4"><i class="bi bi-folder2-open"></i> Content Management</h2>
+
+<ul class="nav nav-tabs mb-3" id="contentTabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#posts">Posts (@Model.Posts.Count)</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="posts">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Published</th>
+                        <th>Views</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in Model.Posts)
+                    {
+                        <tr>
+                            <td><a href="/posts/@post.Slug">@post.Title</a></td>
+                            <td>@post.AuthorName</td>
+                            <td>
+                                @if (post.PublishedAt.HasValue)
+                                {
+                                    <span class="badge bg-success">Published</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Draft</span>
+                                }
+                            </td>
+                            <td><small>@(post.PublishedAt?.ToString("MMM dd, yyyy") ?? "-")</small></td>
+                            <td>@post.ViewCount</td>
+                            <td>
+                                <a href="/posts/@post.Slug/edit" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

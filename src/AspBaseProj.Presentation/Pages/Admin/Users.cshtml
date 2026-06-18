@@ -1,0 +1,80 @@
+@page
+@model AspBaseProj.Presentation.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2 class="mb-4"><i class="bi bi-people-fill"></i> User Management</h2>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Group</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>
+                        @user.UserName
+                        @if (user.IsRoot)
+                        {
+                            <span class="badge bg-danger">ROOT</span>
+                        }
+                    </td>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (user.IsRoot)
+                        {
+                            <span class="badge bg-secondary">Root (fixed)</span>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="ChangeGroup" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <select name="group" class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="this.form.submit()">
+                                    @foreach (var g in System.Enum.GetValues(typeof(AspBaseProj.Domain.Enums.UserGroup)).Cast<AspBaseProj.Domain.Enums.UserGroup>())
+                                    {
+                                        <option value="@g" selected="@(user.Group == g)">@g</option>
+                                    }
+                                </select>
+                            </form>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </td>
+                    <td><small>@user.CreatedAt.ToString("MMM dd, yyyy")</small></td>
+                    <td>
+                        @if (!user.IsRoot)
+                        {
+                            <form method="post" asp-page-handler="ToggleStatus" class="d-inline" onsubmit="return confirm('@(user.IsActive ? "Deactivate" : "Activate") this user?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <input type="hidden" name="isActive" value="@(!user.IsActive)" />
+                                <button type="submit" class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")">
+                                    <i class="bi @(user.IsActive ? "bi-person-x" : "bi-person-check")"></i>
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
