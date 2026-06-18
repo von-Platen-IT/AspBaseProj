@@ -24,7 +24,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // --- Web: Razor Pages + MVC ---
 builder.Services.AddRazorPages(options =>
 {
-    // Add additional routes for Posts/Edit page
+    // Add additional routes for Posts pages
+    options.Conventions.AddPageRoute("/Posts/Detail", "/posts/{slug}");
     options.Conventions.AddPageRoute("/Posts/Edit", "/posts/create");
 });
 builder.Services.AddControllers();
