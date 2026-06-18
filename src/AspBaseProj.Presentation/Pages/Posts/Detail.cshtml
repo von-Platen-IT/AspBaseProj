@@ -70,14 +70,36 @@
 <section id="comments">
     <h3 class="mb-3"><i class="bi bi-chat-dots"></i> Comments (@Model.Comments.Count)</h3>
 
-    <!-- Comment Form -->
-    <div class="card mb-4">
+    @{
+        // Set ViewData for use in nested _CommentTree partials
+        ViewData["PostId"] = Model.Post.Id;
+        ViewData["PostSlug"] = Model.Post.Slug;
+    }
+
+    <!-- "Kommentieren" Button (visible by default) -->
+    <button type="button" class="btn btn-primary mb-3" onclick="showCommentForm()">
+        <i class="bi bi-chat-dots"></i> Kommentieren
+    </button>
+
+    @if (Model.Comments.Count == 0)
+    {
+        <p class="text-muted">No comments yet. Be the first to comment!</p>
+    }
+    else
+    {
+        <ul class="comment-thread">
+            @await Html.PartialAsync("_CommentTree", Model.Comments)
+        </ul>
+    }
+
+    <!-- Inline Top-Level Comment Form (hidden by default) -->
+    <div id="commentFormContainer" class="card mb-4" style="display:none;">
         <div class="card-body">
-            <form method="post" asp-page-handler="AddComment">
+            <form method="post" asp-page-handler="AddComment" id="mainCommentForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="PostId" value="@Model.Post.Id" />
                 <input type="hidden" name="PostSlug" value="@Model.Post.Slug" />
-                <input type="hidden" id="ParentCommentId" name="ParentCommentId" value="" />
+                <input type="hidden" name="ParentCommentId" value="" />
 
                 @if (!User.Identity?.IsAuthenticated ?? true)
                 {
@@ -97,31 +119,17 @@
                 }
 
                 <div class="mb-2">
-                    <label class="form-label">Comment *</label>
+                    <label class="form-label" id="commentFormLabel">Comment *</label>
                     <textarea name="Content" class="form-control" rows="3" required maxlength="5000"></textarea>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-sm btn-link text-decoration-none" onclick="document.getElementById('ParentCommentId').value=''" id="replyCancelBtn" style="display:none;">
-                        Cancel reply
-                    </button>
+                <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send"></i> Post Comment</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="hideCommentForm()">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
-
-    <!-- Comment Thread -->
-    @if (Model.Comments.Count == 0)
-    {
-        <p class="text-muted">No comments yet. Be the first to comment!</p>
-    }
-    else
-    {
-        <ul class="comment-thread">
-            @await Html.PartialAsync("_CommentTree", Model.Comments)
-        </ul>
-    }
 </section>
 
 <!-- Delete Confirmation Modal -->
@@ -149,10 +157,46 @@
 
 @section Scripts {
     <script>
-        function replyTo(commentId) {
-            document.getElementById('ParentCommentId').value = commentId;
-            document.getElementById('replyCancelBtn').style.display = 'inline-block';
-            document.querySelector('#comments form').scrollIntoView({ behavior: 'smooth' });
+        // Hide all inline reply forms
+        function hideAllReplyForms() {
+            document.querySelectorAll('.inline-reply-form').forEach(el => el.style.display = 'none');
+            document.getElementById('commentFormContainer').style.display = 'none';
+        }
+
+        // Show the top-level comment form
+        function showCommentForm() {
+            hideAllReplyForms();
+            var form = document.getElementById('commentFormContainer');
+            form.style.display = 'block';
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Focus textarea
+            var textarea = form.querySelector('textarea[name="Content"]');
+            if (textarea) textarea.focus();
+        }
+
+        // Hide the top-level comment form
+        function hideCommentForm() {
+            document.getElementById('commentFormContainer').style.display = 'none';
+        }
+
+        // Show the reply form for a specific comment
+        function showReplyForm(commentId) {
+            hideAllReplyForms();
+            var form = document.getElementById('replyForm-' + commentId);
+            if (form) {
+                form.style.display = 'block';
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                var textarea = form.querySelector('textarea[name="Content"]');
+                if (textarea) textarea.focus();
+            }
+        }
+
+        // Hide the reply form for a specific comment
+        function hideReplyForm(commentId) {
+            var form = document.getElementById('replyForm-' + commentId);
+            if (form) {
+                form.style.display = 'none';
+            }
         }
     </script>
 }

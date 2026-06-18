@@ -2,7 +2,7 @@
 
 @foreach (var comment in Model)
 {
-    <li class="comment-item @(comment.IsApproved ? "" : "pending")">
+    <li class="comment-item @(comment.IsApproved ? "" : "pending")" id="comment-@comment.Id">
         <div class="comment-meta">
             <span class="comment-author">@(comment.UserName ?? comment.GuestName ?? "Anonymous")</span>
             <span class="mx-1">|</span>
@@ -17,9 +17,49 @@
             }
         </div>
         <p class="mt-2 mb-1">@comment.Content</p>
-        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0" onclick="replyTo('@comment.Id')">
-            <i class="bi bi-reply"></i> Reply
+
+        <!-- "Antworten" Button -->
+        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 reply-btn"
+                onclick="showReplyForm('@comment.Id')">
+            <i class="bi bi-reply"></i> Antworten
         </button>
+
+        <!-- Inline Reply Form (hidden by default) -->
+        <div id="replyForm-@comment.Id" class="card card-body mt-2 mb-2 inline-reply-form" style="display:none;">
+            <form method="post" asp-page="/Posts/Detail" asp-page-handler="AddComment">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="PostId" value="@ViewData["PostId"]" />
+                <input type="hidden" name="PostSlug" value="@ViewData["PostSlug"]" />
+                <input type="hidden" name="ParentCommentId" value="@comment.Id" />
+
+                @if (!User.Identity?.IsAuthenticated ?? true)
+                {
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Your Name *</label>
+                            <input name="GuestName" class="form-control" required maxlength="100" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Your Email *</label>
+                            <input name="GuestEmail" type="email" class="form-control" required maxlength="200" />
+                        </div>
+                    </div>
+                    <div class="alert alert-info small py-1">
+                        <i class="bi bi-info-circle"></i> Guest comments require moderator approval.
+                    </div>
+                }
+
+                <div class="mb-2">
+                    <textarea name="Content" class="form-control" rows="2" required maxlength="5000"
+                              placeholder="Write a reply..."></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send"></i> Reply</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="hideReplyForm('@comment.Id')">Cancel</button>
+                </div>
+            </form>
+        </div>
 
         @if (comment.Replies.Count > 0)
         {
